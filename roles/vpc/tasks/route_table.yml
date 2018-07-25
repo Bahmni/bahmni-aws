@@ -1,0 +1,28 @@
+- name:               Setup public subnet route table
+  ec2_vpc_route_table:
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    tags:
+      Name:           "Public_Rt"
+    subnets: "{{cidr_blocks.public_subnet}}"
+    routes:
+      - dest:         "{{cidr_blocks.all}}"
+        gateway_id:   "{{ igw_id }}"
+
+- name:               Setup Nat route table
+  ec2_vpc_route_table:
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    state: present
+    tags:
+      Name:           "Private-Rt"
+    subnets:
+      - "{{ private_subnet_id }}"
+    routes:
+        - dest:        "{{cidr_blocks.all}}"
+          gateway_id: "{{nat.nat_gateway_id}}"
+  register: route_table

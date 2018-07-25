@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+    - vpc
+  vars_files:
+    - "group_vars/aws_credentials.yml"
+    - "group_vars/vars.yml"
+    - "group_vars/cidr_blocks.yml"

@@ -1,0 +1,21 @@
+- name:               Create public Security Group
+  ec2_group:
+    name:             "public_sg"
+    description:      "public security group"
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    rules:            "{{ public_security_rules }}"
+    rules_egress:     "{{ public_security_rules_egress }}"
+
+- name:               Create private Security Group
+  ec2_group:
+    name:             "private_sg"
+    description:      "private security group"
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    rules:            "{{ private_security_rules }}"
+    rules_egress:     "{{ private_security_rules_egress }}"
