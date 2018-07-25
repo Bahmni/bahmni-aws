@@ -10,12 +10,3 @@
     region: "{{ aws_region }}"
     if_exist_do_not_create: true
   register: nat
-
-#- debug:
-#    msg: "{{nat.nat_gateway_id}}"
-#
-##- name:               Set Nate Gateway ID in variable
-##  set_fact:
-##    nat_output: "{{ nat.nat_gateway_id }}"
-#
-##- set_fact: nat_output={{ nat.stdout |from_json }}
