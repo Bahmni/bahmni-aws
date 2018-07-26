@@ -26,7 +26,22 @@
       Name:           "private"
   register: private_subnet
 
+- name:               Create Showcase Subnet
+  ec2_vpc_subnet:
+    state:            "present"
+    vpc_id:           "{{ vpc_id }}"
+    cidr:             "{{ cidr_blocks.showcase_subnet }}"
+    az:               "{{ aws_region }}a"
+    region:           "{{ aws_region }}"
+    map_public: no
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    resource_tags:
+      Name:           "showcase"
+  register: showcase_subnet
+
 - name:               Set Subnet ID in variable
   set_fact:
     public_subnet_id: "{{ public_subnet.subnet.id }}"
     private_subnet_id: "{{ private_subnet.subnet.id }}"
+    showcase_subnet_id: "{{ showcase_subnet.subnet.id }}"

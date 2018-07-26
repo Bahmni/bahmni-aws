@@ -1,0 +1,5 @@
+---
+- name: start go-agent
+  service:
+    name: go-agent
+    state: started

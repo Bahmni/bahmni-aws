@@ -19,3 +19,14 @@
     aws_secret_key:   "{{ aws_secret_key }}"
     rules:            "{{ private_security_rules }}"
     rules_egress:     "{{ private_security_rules_egress }}"
+
+- name:               Create showcase Security Group
+  ec2_group:
+    name:             "showcase_sg"
+    description:      "private security group"
+    vpc_id:           "{{ vpc_id }}"
+    region:           "{{ aws_region }}"
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    rules:            "{{ showcase_security_rules }}"
+    rules_egress:     "{{ showcase_security_rules_egress }}"

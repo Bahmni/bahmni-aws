@@ -1,0 +1,10 @@
+---
+# defaults file for ssl-certs
+
+certs_dir: /etc/letsencrypt-certs
+#letsencrypt_prod_server: https://acme-staging.api.letsencrypt.org/directory
+letsencrypt_prod_server: https://acme-v01.api.letsencrypt.org/directory
+email: "bahmni@thoughtworks.com"
+certs_user: root
+certs_group: root
+intermediate_cert: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem

@@ -22,6 +22,7 @@
       Name:           "Private-Rt"
     subnets:
       - "{{ private_subnet_id }}"
+      - "{{ showcase_subnet_id }}"
     routes:
         - dest:        "{{cidr_blocks.all}}"
           gateway_id: "{{nat.nat_gateway_id}}"

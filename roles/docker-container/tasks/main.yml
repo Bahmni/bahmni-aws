@@ -1,0 +1,13 @@
+---
+
+- include: add-container-dns.yml
+  vars:
+    - container_name: "{{ container_name }}"
+  tags: add-dns-entry
+
+- include: docker_proxy.yml
+  vars:
+    - docker_instance_IP: "{{ docker_host }}"
+    - container_name: "{{ container_name }}"
+    - https_port: "{{ https_port }}"
+  tags: add-proxy-config

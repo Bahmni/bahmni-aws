@@ -1,0 +1,49 @@
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    stats timeout 120s
+    maxconn 4096
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    tcp
+    option  tcplog
+    option  dontlognull
+    timeout connect 15s
+    timeout client  15s
+    timeout server  15s
+
+frontend http_80_frontend
+    bind *:80
+    mode http
+    redirect scheme https code 301 if !{ ssl_fc }
+
+frontend https_443_frontend
+    bind *:443
+    option tcplog
+    mode tcp
+    acl tls req.ssl_hello_type 1
+    tcp-request inspect-delay 5s
+    tcp-request content accept if tls
+   {% for h in target_proxy_instances.instances %}
+     acl {{ h.tags.Name }} req.ssl_sni -i {{ h.tags.Name }}.mybahmni.org
+     use_backend {{h.tags.Name}} if {{ h.tags.Name }}
+     acl {{ h.tags.Name }}_erp req.ssl_sni -i erp-{{ h.tags.Name }}.mybahmni.org
+     use_backend {{h.tags.Name}}_erp if {{ h.tags.Name }}_erp
+   {% endfor %}
+   #docker container haproxy config frontend
+
+{% for h in target_proxy_instances.instances %}
+backend {{ h.tags.Name }}
+  mode tcp
+  option ssl-hello-chk
+  server {{ h.tags.Name }} {{ h.private_ip_address }}:443 check
+backend {{ h.tags.Name }}_erp
+  mode tcp
+  server {{ h.tags.Name }} {{ h.private_ip_address }}
+{% endfor %}
+#docker container haproxy config backend
+

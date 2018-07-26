@@ -1,0 +1,56 @@
+- name: Install native build tools
+  yum: state=present name={{ item }}
+  with_items:
+    - gcc
+    - gcc-c++
+    - make
+- name: Set GPG key for RVM
+  command: "gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+
+- name: Download RVM with Ruby 1.9.3
+  shell: "curl -sSL https://get.rvm.io | bash -s stable --ruby=1.9.3 --gems=compass"
+
+- name: Install gcc-c++ make
+  yum: name={{item}} state=present
+  with_items:
+     - gcc-c++
+     - make
+
+- name: Add nodejs repository
+  shell: curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
+
+- name: Install nodejs
+  yum: name=nodejs-6.6.0 state=present
+
+- name: install i18n
+  command: /bin/bash -l -c 'gem install i18n -v 0.7.0'
+
+- name: Install npm
+  npm: name=npm@3.10.7 global=yes state=present
+
+- name: Install cordova
+  npm: name=cordova@6.4.0 global=yes state=present
+
+- name: make sure bower is installed
+  npm: name=bower@1.7.9 global=yes state=present
+
+- name: make sure grunt-cli is installed
+  npm: name=grunt-cli global=yes state=present
+
+- name: Install ant-apache-regexp
+  yum: name=ant-apache-regexp state=present
+
+- name: Install ant-junit
+  yum: name=ant-junit state=present
+
+- name: Install ant-trax
+  yum: name=ant-trax state=present
+
+- name: Install createrepo
+  yum: name=createrepo state=present
+
+- name: Install pip
+  yum: name=python-pip state=present
+
+- name: Install aws-cli
+  pip: name=awscli state=present

@@ -1,0 +1,120 @@
+- name: install openssl
+  yum: name=openssl state=present
+  become: yes
+
+- name: Install Apache
+  yum: pkg=httpd state=installed
+
+- name: create certs directory
+  file: path={{ certs_dir }} state=directory
+  become: yes
+
+- name: create certs directory
+  file: path=/etc/bahmni-certs state=directory
+  become: yes
+
+- name: check if letsencrypt account key is present
+  stat: path={{ certs_dir }}/account.key
+  become: yes
+  register: account_key_exists
+
+- name: generate letsencrypt account key
+  command: openssl genrsa -out {{ certs_dir }}/account.key 4096
+  become: yes
+  when: account_key_exists.stat.exists == False
+
+- name: check if domain key is present
+  stat: path={{ certs_dir }}/domain.key
+  become: yes
+  register: domain_key_exists
+
+- name: backup domain key
+  command: mv -f {{ certs_dir }}/domain.key {{ certs_dir }}/domain.key.bkp
+  become: yes
+  when: domain_key_exists.stat.exists == True
+
+- name: check if certificate is present
+  stat: path={{ certs_dir }}/cert.crt
+  become: yes
+  register: certificate_exists
+
+- name: Back up {{ certs_dir }}/cert.crt at {{ certs_dir }}/cert.crt.bkp
+  command: mv -f {{ certs_dir }}/cert.crt {{ certs_dir }}/cert.crt.bkp
+  become: yes
+  when: certificate_exists.stat.exists == True
+
+- name: generate domain key
+  command: openssl genrsa -out {{ certs_dir }}/domain.key 4096
+  become: yes
+
+- name: Copy openssl configuration file
+  template:
+    src=openssl.cnf.j2
+    dest=/etc/ssl/openssl.cnf
+    owner={{ certs_user }}
+    group={{ certs_group }}
+    mode=0644
+  become: yes
+
+- name: generate certificate signing request
+  shell: openssl req -new -sha256 -key {{ certs_dir }}/domain.key -subj "/CN={{ ec2_tag_Name }}.{{ PublicHostedZone }}" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName=DNS.1:{{ ec2_tag_Name }}.{{ PublicHostedZone }},DNS.2:erp-{{ ec2_tag_Name }}.{{ PublicHostedZone }}")) -out {{ certs_dir }}/csr.csr
+  args:
+    executable: /bin/bash
+  become: yes
+
+- letsencrypt:
+     acme_directory: "{{ letsencrypt_prod_server }}"
+     account_email: "{{ email }}"
+     account_key: "{{ certs_dir }}/account.key"
+     csr: "{{ certs_dir }}/csr.csr"
+     dest: "{{ certs_dir }}/cert.crt"
+     challenge: "dns-01"
+     agreement: "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+  become: yes
+  register: letsencrypt_data
+
+- name: Create txt record for {{ ec2_tag_Name }}
+  become: no
+  route53:
+    aws_access_key:   "{{ aws_access_key }}"
+    aws_secret_key:   "{{ aws_secret_key }}"
+    command: create
+    zone: "{{ PublicHostedZone }}"
+    record: '{{ letsencrypt_data["challenge_data"][item]["dns-01"]["resource"] }}.{{ item }}'
+    type: TXT
+    ttl: 300
+    value: '"{{ letsencrypt_data["challenge_data"][item]["dns-01"]["resource_value"]  }}"'
+    overwrite: true
+  delegate_to: localhost
+  become: no
+  with_items: "{{ letsencrypt_data['challenge_data'] }}"
+
+- name: Wait for 10 seconds for the configuration to take effect
+  pause: seconds=30
+
+- name: receive signed certificate from LetsEncrypt
+  letsencrypt:
+   acme_directory: "{{ letsencrypt_prod_server }}"
+   account_email: "{{ email }}"
+   account_key: "{{ certs_dir }}/account.key"
+   csr: "{{ certs_dir }}/csr.csr"
+   dest: "{{ certs_dir }}/cert.crt"
+   challenge: "dns-01"
+   data: "{{ letsencrypt_data }}"
+  become: yes
+
+- name: create certificate chain
+  shell: "{ cat {{ certs_dir }}/cert.crt & wget -O - {{ intermediate_cert }}; } > {{ certs_dir }}/chained.pem"
+  become: yes
+
+- name: link LetsEncrypt certificate
+  file: src={{ item.src }}  dest={{ item.dest }} state=link owner={{ certs_user }} group={{ certs_group }}
+  become: yes
+  with_items:
+    - {src: "{{ certs_dir }}/cert.crt", dest: /etc/bahmni-certs/cert.crt}
+    - {src: "{{ certs_dir }}/domain.key", dest: /etc/bahmni-certs/domain.key}
+    - {src: "{{ certs_dir }}/chained.pem", dest: /etc/bahmni-certs/chained.pem}
+
+- name: start httpd service
+  service: name=httpd state=restarted
+  become: yes
