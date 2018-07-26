@@ -23,7 +23,7 @@
 - name:               Create showcase Security Group
   ec2_group:
     name:             "showcase_sg"
-    description:      "private security group"
+    description:      "showcase security group"
     vpc_id:           "{{ vpc_id }}"
     region:           "{{ aws_region }}"
     aws_access_key:   "{{ aws_access_key }}"
