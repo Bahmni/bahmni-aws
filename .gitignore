@@ -1,0 +1,10 @@
+target/
+.DS_Store
+.idea
+*.iml
+*/logs/*
+logs/*
+classes/
+.sass-cache
+.rubygems-provided
+.rubygems
