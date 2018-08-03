@@ -1,5 +1,5 @@
 haproxy_spec:
-   Tags: {"role": "proxy", "type": "public"}
+   Tags: {"role": "proxy", "type": "public", "env": "public"}
    StartIndex: 1
    ExactCount: 1
    InstanceType: t2.micro

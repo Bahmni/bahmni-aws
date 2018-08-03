@@ -1,0 +1,60 @@
+- set_fact:
+    username: "{{username}}"
+
+- name: Check if group exists
+  shell: /usr/bin/getent group | awk -F":" '{print $1}' | grep "{{developer_groups}}"
+  register: group_status
+  ignore_errors: yes
+
+- name: Create developers_groups
+  become: yes
+  group:
+    name: "{{developer_groups}}"
+    state: present
+  when: "not developer_groups in group_status.stdout_lines"
+  register: developer_groups_status
+
+- name: Add user account
+  become: yes
+  user:
+    name: "{{item.name}}"
+    groups: "{{developer_groups}}"
+    append: yes
+    shell: "{{shell}}"
+  with_items: "{{developers}}"
+  when: "item.name in username and item.name == username or username == 'all'"
+
+- name: Add keys to account
+  become: yes
+  authorized_key:
+    user: "{{item.name}}"
+    state: "{{item.state}}"
+    key: "{{item.key}}"
+    exclusive: True
+  with_items: "{{developers}}"
+  when: "item.name in username and item.name == username or username == 'all'"
+
+- name: remove user account
+  user:
+    name: "{{item.name}}"
+    remove: yes
+    force: yes
+    state: "{{item.state}}"
+    groups: "{{developer_groups}}"
+    append: no
+    shell: "{{shell}}"
+    ssh_key_file: "/home/{{item.name}}/.ssh/authorized_keys"
+  with_items: "{{developers}}"
+  when: "item.state == 'absent' and item.name in username and item.name == username or username == 'all'"
+
+- name: Add developers_groups group to sudo
+  become: yes
+  lineinfile: "dest=/etc/sudoers state=present backup=yes regexp='^%{{developer_groups}}' insertafter='^# %wheel' line='%{{developer_groups}} ALL=(ALL) NOPASSWD: ALL' validate='visudo -cf %s'"
+  when: developer_groups_status.changed
+
+- name: reload sshd
+  become: yes
+  service: name=sshd state=reloaded
+  when: developer_groups_status.changed
+
+

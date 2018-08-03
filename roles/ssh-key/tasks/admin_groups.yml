@@ -1,0 +1,68 @@
+- set_fact:
+    username: "{{username}}"
+
+- name: Check if group exists
+  shell: /usr/bin/getent group | awk -F":" '{print $1}' | grep "{{admin_groups}}"
+  register: group_status
+  ignore_errors: yes
+
+- name: Create admin_groups
+  become: yes
+  group:
+    name: "{{admin_groups}}"
+    state: present
+  when: "not admin_groups in group_status.stdout_lines"
+  register: admin_groups_status
+
+- name: Create developers_groups
+  become: yes
+  group:
+    name: "{{admin_groups}}"
+    state: present
+  when: "not admin_groups in group_status.stdout_lines"
+  register: admin_groups_status
+
+- name: Add user account
+  become: yes
+  user:
+    name: "{{item.name}}"
+    groups: "{{admin_groups}}"
+    append: yes
+    shell: "{{shell}}"
+  with_items: "{{admins}}"
+  when: "item.name in username and item.name == username or username == 'all'"
+
+- name: Add keys to account
+  become: yes
+  authorized_key:
+    user: "{{item.name}}"
+    state: "{{item.state}}"
+    key: "{{item.key}}"
+    exclusive: True
+  with_items: "{{admins}}"
+  when: "item.name in username and item.name == username or username == 'all'"
+
+- name: remove user account
+  user:
+    name: "{{item.name}}"
+    remove: yes
+    force: yes
+    state: "{{item.state}}"
+    groups: "{{admin_groups}}"
+    append: no
+    shell: "{{shell}}"
+    ssh_key_file: "/home/{{item.name}}/.ssh/authorized_keys"
+  with_items: "{{admins}}"
+  when: "item.state == 'absent' and item.name in username and item.name == username or username == 'all'"
+
+- name: Add admin_group group to sudo
+  become: yes
+  lineinfile: "dest=/etc/sudoers state=present backup=yes regexp='^%{{admin_groups}}' insertafter='^# %wheel' line='%{{admin_groups}} ALL=(ALL) NOPASSWD: ALL' validate='visudo -cf %s'"
+  when: developer_groups_status.changed
+
+- name: reload sshd
+  become: yes
+  service: name=sshd state=reloaded
+  when: developer_groups_status.changed
+
+

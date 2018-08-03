@@ -1,0 +1,6 @@
+- include: admin_groups.yml
+  with_items: "{{admins}}"
+  when: admin == 'yes' and env == "dev" and env == "public" and env == "private"
+- include: developer_groups.yml
+  with_items: "{{developers}}"
+  when: "admin != 'yes' and env == "qa" and env == "public"
