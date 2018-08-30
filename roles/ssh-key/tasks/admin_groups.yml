@@ -58,11 +58,11 @@
 - name: Add admin_group group to sudo
   become: yes
   lineinfile: "dest=/etc/sudoers state=present backup=yes regexp='^%{{admin_groups}}' insertafter='^# %wheel' line='%{{admin_groups}} ALL=(ALL) NOPASSWD: ALL' validate='visudo -cf %s'"
-  when: developer_groups_status.changed
+  when: admin_groups_status.changed
 
 - name: reload sshd
   become: yes
   service: name=sshd state=reloaded
-  when: developer_groups_status.changed
+  when: admin_groups_status.changed
 
 

@@ -1,0 +1,15 @@
+- hosts: localhost
+  roles:
+    - fetch-facts
+    - ec2-instance
+  vars_files:
+    - "group_vars/aws_credentials.yml"
+    - "group_vars/vars.yml"
+    - "group_vars/users.yml"
+    - "group_vars/cidr_blocks.yml"
+    - "configs/instances.yml"
+    - "configs/ci_server.yml"
+    - "configs/proxy.yml"
+    - "configs/docker_node.yml"
+  tags:
+    - create_instance

@@ -1,0 +1,4 @@
+ec2_instances:
+#  - { hostname: ci-server, spec: "{{ build_server_spec }}" }
+#  - { hostname: proxy, spec: "{{ proxy_spec}}" }
+  - { hostname: dockernode01, spec: "{{ docker_node_env_spec}}" }

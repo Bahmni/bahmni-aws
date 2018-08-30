@@ -1,13 +1,13 @@
-haproxy_spec:
+proxy_spec:
    Tags: {"role": "proxy", "type": "public", "env": "public"}
    StartIndex: 1
    ExactCount: 1
    InstanceType: t2.micro
    SecurityGroups:
-     - "{{ SecurityGroupIds.public_proxy }}"
-   AmiId: "{{ available_amis.hardened_ami }}"
+     - "{{ SecurityGroupIds.public_sg }}"
+   AmiId: "{{ available_amis.bahmni_ami }}"
    SubnetId: "{{ SubnetIds.public }}"
-   public_ip: ""
+   public_ip: "52.220.233.188"
    InstanceVolumes:
      - VolumeSpecifications:
          - volume_size: 40

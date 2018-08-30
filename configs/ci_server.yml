@@ -2,11 +2,11 @@ build_server_spec:
    Tags: {"role": "build-server", "server_type": "public", "env": "dev" }
    StartIndex: 1
    ExactCount: 1
-   InstanceType: m4.large
+   InstanceType: t2.micro
    SecurityGroups:
-     - "{{ SecurityGroupIds.buildserver }}"
+     - "{{ SecurityGroupIds.private_sg }}"
    AmiId: "{{ available_amis.bahmni_ami }}"
-   SubnetId: "{{ SubnetIds.assets }}"
+   SubnetId: "{{ SubnetIds.private }}"
    AssignPublicIp: no
    InstanceVolumes:
      - VolumeSpecifications:
