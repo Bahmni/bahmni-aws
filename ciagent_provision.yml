@@ -1,0 +1,22 @@
+- hosts: "{{ host | default('tag_role_build-agent') }}"
+  become: yes
+  vars:
+   ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
+   ansible_user: centos
+  roles:
+    - epel-repo
+    - oracle-java
+    - build-utils
+    - ruby2.2.2
+    - go-agent
+    - postgres
+    - mysql
+    - maven
+    - firefox
+    - chrome
+    - gauge
+    - httpd
+  vars_files:
+    - "group_vars/vars.yml"
+  tags:
+    - provision_build_agent

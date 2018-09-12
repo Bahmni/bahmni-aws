@@ -7,7 +7,7 @@ proxy_spec:
      - "{{ SecurityGroupIds.public_sg }}"
    AmiId: "{{ available_amis.bahmni_ami }}"
    SubnetId: "{{ SubnetIds.public }}"
-   public_ip: "18.136.34.119"
+   public_ip: "18.136.160.61"
    InstanceVolumes:
      - VolumeSpecifications:
          - volume_size: 40
