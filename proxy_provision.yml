@@ -1,7 +1,7 @@
-- hosts: tag_role_proxy_server
+- hosts: tag_role_proxy
   become: yes
   vars:
-   ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@bastion.mybahmni.org"'
+   ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
    ansible_user: centos
   roles:
     - haproxy

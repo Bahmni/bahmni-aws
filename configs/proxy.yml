@@ -1,5 +1,5 @@
 proxy_spec:
-   Tags: {"role": "proxy", "type": "public", "env": "public"}
+   Tags: {"role": "proxy", "type": "private-public", "env": "public"}
    StartIndex: 1
    ExactCount: 1
    InstanceType: t2.micro
@@ -7,7 +7,7 @@ proxy_spec:
      - "{{ SecurityGroupIds.public_sg }}"
    AmiId: "{{ available_amis.bahmni_ami }}"
    SubnetId: "{{ SubnetIds.public }}"
-   public_ip: "52.220.233.188"
+   public_ip: "18.136.34.119"
    InstanceVolumes:
      - VolumeSpecifications:
          - volume_size: 40

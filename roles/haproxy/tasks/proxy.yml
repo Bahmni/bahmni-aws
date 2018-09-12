@@ -6,7 +6,6 @@
     region:           "{{ aws_region }}"
     filters:
       instance-state-name: running
-      'tag:type': "{{ config.proxy_type }}"
   register: proxy_instances
 
 - name: Add proxy to dynamic host group
@@ -41,7 +40,6 @@
     region:           "{{ aws_region }}"
     filters:
        instance-state-name: running
-       'tag:server_type': "{{config.target_server_type}}"
   register: target_proxy_instances
 
 - name: Copy haproxy config

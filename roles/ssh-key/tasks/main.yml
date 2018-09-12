@@ -1,6 +1,7 @@
 - include: admin_groups.yml
   with_items: "{{admins}}"
-  when: (admin == 'yes' and env == 'dev' and env == 'public') or (admin == 'yes' and env == 'qa' and env == 'private')
+  when: item.admin is defined
+
 - include: developer_groups.yml
   with_items: "{{developers}}"
-  when: admin != 'yes' and env == 'qa' and env == 'public'
+  when: (item.admin is not defined and ec2_tag_env == "public") or (item.admin is not defined and ec2_tag_env == "showcase")
