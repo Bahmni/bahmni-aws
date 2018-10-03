@@ -11,5 +11,6 @@
     - "configs/ci_server.yml"
     - "configs/proxy.yml"
     - "configs/docker_node.yml"
+    - "configs/docker_swarm.yml"
   tags:
     - create_instance

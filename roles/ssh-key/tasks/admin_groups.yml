@@ -14,14 +14,6 @@
   when: "not admin_groups in group_status.stdout_lines"
   register: admin_groups_status
 
-- name: Create developers_groups
-  become: yes
-  group:
-    name: "{{admin_groups}}"
-    state: present
-  when: "not admin_groups in group_status.stdout_lines"
-  register: admin_groups_status
-
 - name: Add user account
   become: yes
   user:

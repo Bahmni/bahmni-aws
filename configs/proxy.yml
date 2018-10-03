@@ -2,7 +2,7 @@ proxy_spec:
    Tags: {"role": "proxy", "type": "private-public", "env": "public"}
    StartIndex: 1
    ExactCount: 1
-   InstanceType: t2.micro
+   InstanceType: t2.medium
    SecurityGroups:
      - "{{ SecurityGroupIds.public_sg }}"
    AmiId: "{{ available_amis.bahmni_ami }}"

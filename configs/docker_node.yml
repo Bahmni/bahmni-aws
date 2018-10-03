@@ -2,15 +2,15 @@ docker_node_env_spec:
    Tags: {"role": "docker-node", "server_type": "public", "env": "showcase" }
    StartIndex: 1
    ExactCount: 1
-   InstanceType: t2.micro
+   InstanceType: t2.xlarge
    SecurityGroups:
      - "{{ SecurityGroupIds.showcase_sg }}"
-   AmiId: "{{ available_amis.bahmni_ami }}"
+   AmiId: "{{ available_amis.docker_host_ami }}"
    SubnetId: "{{ SubnetIds.showcase }}"
    AssignPublicIp: no
    InstanceVolumes:
      - VolumeSpecifications:
-         - volume_size: 40
+         - volume_size: 100
            volume_type: gp2
            device_name: /dev/sda1
            delete_on_termination: yes

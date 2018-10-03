@@ -72,14 +72,14 @@
        'tag:role': 'build-server'
   register: bahmni_server_instances
 
-- name: Add go server
-  become: yes
-  replace:
-    dest: /etc/haproxy/haproxy.cfg
-    regexp: '^backend ci[\s\S]* server ci \d+\.\d+\.\d+\.\d+\:\d+\s*$'
-    replace: "backend ci \n redirect scheme https if !{ ssl_fc } \n mode http \n server ci {{bahmni_server_instances.instances[0].private_ip_address}}:8153\n"
-  delegate_to: "{{ item.tags.Name }}"
-  with_items: "{{ proxy_instances.instances }}"
+#- name: Add go server
+#  become: yes
+#  replace:
+#    dest: /etc/haproxy/haproxy.cfg
+#    regexp: '^backend ci[\s\S]* server ci \d+\.\d+\.\d+\.\d+\:\d+\s*$'
+#    replace: "backend ci \n redirect scheme https if !{ ssl_fc } \n mode http \n server ci {{bahmni_server_instances.instances[0].private_ip_address}}:8153\n"
+#  delegate_to: "{{ item.tags.Name }}"
+#  with_items: "{{ proxy_instances.instances }}"
 
 - name: Restart haproxy
   delegate_to: "{{ item.tags.Name }}"
