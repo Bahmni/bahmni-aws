@@ -1,0 +1,7 @@
+---
+# defaults file for docker-ce
+
+run_docker_swarm:    true
+docker_api_network:  true
+docker_api_host:     "0.0.0.0"
+docker_api_port:     "2376"

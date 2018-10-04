@@ -1,4 +1,4 @@
-- hosts: tag_role_proxy
+- hosts: "{{ host | default('tag_Name_proxy') }}"
   become: yes
   vars:
    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'

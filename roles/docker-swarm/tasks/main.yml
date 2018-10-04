@@ -1,0 +1,124 @@
+---
+- name: Install some essential software
+  yum:
+    name: "{{item}}"
+    state: installed
+  with_items:
+  - unzip
+  - vim
+  tags:
+  - essential
+
+- name: Install docker yum repository
+  template: src="{{item.src}}" dest="{{item.dest}}" owner="{{item.owner|default('root')}}" group="{{item.group|default('root')}}" mode="{{item.mode|default('0644')}}"
+  with_items:
+  - { src: "docker.repo.j2", dest: "/etc/yum.repos.d/docker.repo" }
+  - { src: "docker.service.j2", dest: "/etc/systemd/system/docker.service" }
+  tags:
+  - yum
+  - repo
+
+- name: Install docker engine
+  yum: name="{{item}}" state=installed
+  with_items:
+  - docker-ce
+  - python-docker-py
+
+- name: Allow Docker Swarm traffic in firewall
+  firewalld: port="{{item}}" permanent=true state=enabled immediate=true
+  with_items:
+  - 2377/tcp
+  - 2376/tcp
+  when: run_docker_swarm|bool
+
+- name: Allow Docker API traffic in firewall
+  firewalld: port="{{item}}" permanent=true state=enabled immediate=true
+  with_items:
+  - "{{docker_api_port}}/tcp"
+  when: docker_api_network|bool
+
+- name: Expose docker-api on the network
+  template:
+    src: "docker.service.j2"
+    dest: "/etc/systemd/system/docker.service"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reload systemd and start docker
+  systemd:
+    daemon_reload: true
+    name: docker
+
+- name: Check if node is currently in a swarm
+  stat: path=/var/lib/docker/swarm/state.json
+  register: swarm_json
+  when: run_docker_swarm|bool
+  ignore_errors: yes
+
+- name: Check if node is a manager in a swarm
+  stat: path=/var/lib/docker/swarm/raft/
+  register: swarm_raft
+  when: run_docker_swarm|bool
+  ignore_errors: yes
+
+- name: Make sure docker is started
+  service:
+    name: docker
+    state: started
+
+- name: Initialize a docker swarm (when no current swarm is found)
+  command: creates=/var/lib/docker/swarm/control.sock docker swarm init
+  when:
+  - run_docker_swarm|bool
+  - swarm_json.stat.exists|bool == false
+  - swarm_raft.stat.exists|bool == false
+  - docker_swarm_role == 'manager'
+  - ansible_hostname == play_hosts[0]
+  register: swarm_init
+  run_once: yes
+
+- name: Get swarm join token for manager
+  command: docker swarm join-token manager -q
+  register: swarm_manager_token
+  when:
+  - run_docker_swarm|bool
+  - swarm_raft.stat.exists|bool or swarm_init|changed
+  run_once: true
+  check_mode: false
+  changed_when: false
+
+- name: Get swarm join token for worker
+  command: docker swarm join-token worker -q
+  register: swarm_worker_token
+  when:
+  - run_docker_swarm|bool
+  - swarm_raft.stat.exists|bool or swarm_init|changed
+  run_once: true
+  check_mode: false
+  changed_when: false
+
+- name: Join swarm (manager nodes)
+  command: docker swarm join --token {{swarm_manager_token.stdout}} {{hostvars[play_hosts[0]].ansible_eth0.ipv4.address}}:2377
+  ignore_errors: yes
+  when:
+  - docker_swarm_role == 'manager'
+  - swarm_json.stat.exists|bool == false
+  - not ansible_hostname == play_hosts[0]
+
+- name: Join swarm (worker nodes)
+  command: docker swarm join --token {{swarm_worker_token.stdout}} {{hostvars[play_hosts[0]].ansible_eth0.ipv4.address}}:2377
+  ignore_errors: yes
+  when:
+  - docker_swarm_role == 'worker'
+  - swarm_json.stat.exists|bool == false
+
+- name: Fail for undefined swarm role
+  fail:
+    msg: "Docker_swarm_role is not manager or worker"
+  when: docker_swarm_role == 'undefined'
+
+- name: Start docker at boot
+  service:
+    name: docker
+    enabled: true

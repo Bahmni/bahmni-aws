@@ -22,6 +22,15 @@
 - name: Install Git
   yum: name=git state=present
 
+- name: Install Httpd
+  yum: name=httpd state=present
+
+- name: Install module ssl
+  yum: name={{item}} state=present
+  with_itmes:
+      - mod_wsgi
+      - mod_ssl
+
 - name: Installing Java
   yum: pkg=java-1.8.0-openjdk state=installed
 
@@ -31,29 +40,29 @@
 - name: Copy goserver admin credentials
   template: src=passwd_file.j2 dest=/var/lib/go-server/passwd-file owner=root group=root mode=0644
 
-- name: Download github_oauth
-  get_url:
-    url: https://github.com/gocd-contrib/github-oauth-authorization-plugin/releases/download/2.2.0/github-oauth-authorization-plugin-2.2.0-21.jar
-    dest: /var/lib/go-server/plugins/external/github-oauth-authorization-plugin-2.2.0-21.jar
-    owner: go
-    group: go
-    mode: 0644
-
-- name: Download go_maven_poller
-  get_url:
-    url: https://github.com/1and1/go-maven-poller/releases/download/v1.2.1/go-maven-poller.jar
-    dest: /var/lib/go-server/plugins/external/go-maven-poller.jar
-    owner: go
-    group: go
-    mode: 0644
-
-- name: Download go_slack_notifier
-  get_url:
-    url: https://github.com/ashwanthkumar/gocd-slack-build-notifier/releases/download/v1.4.0-RC10/gocd-slack-notifier-1.4.0-RC10.jar
-    dest: /var/lib/go-server/plugins/external/gocd-slack-notifier-1.4.0-RC10.jar
-    owner: go
-    group: go
-    mode: 0644
+#- name: Download github_oauth
+#  get_url:
+#    url: https://github.com/gocd-contrib/github-oauth-authorization-plugin/releases/download/2.2.0/github-oauth-authorization-plugin-2.2.0-21.jar
+#    dest: /var/lib/go-server/plugins/external/github-oauth-authorization-plugin-2.2.0-21.jar
+#    owner: go
+#    group: go
+#    mode: 0644
+#
+#- name: Download go_maven_poller
+#  get_url:
+#    url: https://github.com/1and1/go-maven-poller/releases/download/v1.2.1/go-maven-poller.jar
+#    dest: /var/lib/go-server/plugins/external/go-maven-poller.jar
+#    owner: go
+#    group: go
+#    mode: 0644
+#
+#- name: Download go_slack_notifier
+#  get_url:
+#    url: https://github.com/ashwanthkumar/gocd-slack-build-notifier/releases/download/v1.4.0-RC10/gocd-slack-notifier-1.4.0-RC10.jar
+#    dest: /var/lib/go-server/plugins/external/gocd-slack-notifier-1.4.0-RC10.jar
+#    owner: go
+#    group: go
+#    mode: 0644
 
 - name: Start goserver service
   service: name=go-server state=started

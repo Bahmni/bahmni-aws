@@ -1,5 +1,7 @@
 ---
-
 - include: proxy.yml
-
-
+  with_items:
+  - "{'proxy_type': 'private', 'target_server_type': 'private-public'}"
+  - "{'proxy_type': 'public', 'target_server_type': 'private-public'}"
+  vars:
+  - config: "{{ item }}"

@@ -1,0 +1,11 @@
+---
+rvm:
+  url: https://get.rvm.io
+  temp_installer_path: /tmp/rvm-installer.sh
+  required_packages:
+    - curl
+    - gnupg2
+
+rvm_install_type: system
+rvm_auto_update_rvm: true
+rvm_default_ruby_version: ruby-2.2.2

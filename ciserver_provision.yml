@@ -1,13 +1,15 @@
-- hosts: "{{ host | default('tag_Name_ci') }}"
+- hosts: "{{ host | default('tag_Name_ci_server') }}"
   become: yes
   vars:
-   ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
-   ansible_user: centos
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
+    ansible_user: centos
   roles:
-   - mysql
-   - epel-repo
-   - buildserver
+  - epel-repo
+  - rvm
+  - build-utils
+  - buildserver
   vars_files:
-   - "group_vars/vars.yml"
+  - "group_vars/vars.yml"
   tags:
-    - provision_build_server
+  - provision_build_server
+

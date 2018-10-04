@@ -2,7 +2,7 @@ build_server_spec:
    Tags: {"role": "build-server", "server_type": "private", "env": "dev" }
    StartIndex: 1
    ExactCount: 1
-   InstanceType: t2.micro
+   InstanceType: t2.xlarge
    SecurityGroups:
      - "{{ SecurityGroupIds.private_sg }}"
    AmiId: "{{ available_amis.bahmni_ami }}"

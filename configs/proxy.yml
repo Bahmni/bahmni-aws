@@ -5,7 +5,7 @@ proxy_spec:
    InstanceType: t2.medium
    SecurityGroups:
      - "{{ SecurityGroupIds.public_sg }}"
-   AmiId: "{{ available_amis.bahmni_ami }}"
+   AmiId: "{{ available_amis.hardened_ami }}"
    SubnetId: "{{ SubnetIds.public }}"
    public_ip: "18.136.160.61"
    InstanceVolumes:
