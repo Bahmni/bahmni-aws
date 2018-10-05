@@ -1,0 +1,12 @@
+- hosts: "{{ host | default('tag_role_docker_swarm') }}"
+  become: yes
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
+    ansible_user: centos
+  roles:
+  - docker-swarm
+  vars_files:
+  - "group_vars/vars.yml"
+  tags:
+  - provision_docker_swarm
+

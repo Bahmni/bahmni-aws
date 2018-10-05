@@ -1,3 +1,6 @@
+- name: delete ssl conf
+  file: path='/etc/httpd/conf.d/ssl.conf' state=absent
+
 - name: Copy ci conf
   template: src=ci.conf.j2 dest=/etc/httpd/conf.d/ci.conf owner=root group=root mode=0644
 

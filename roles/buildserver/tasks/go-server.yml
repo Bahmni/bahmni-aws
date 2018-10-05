@@ -6,6 +6,14 @@
   command: /sbin/iptables -I INPUT 1 -p tcp --dport 8153 -j ACCEPT -m comment --comment "GoServer"
   when: iptablesrules.stdout.find("GoServer") == -1
 
+- name: Allow GoServer port redirection through firewall
+  command: /sbin/iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT -m comment --comment "GoServer_redirect"
+  when: iptablesrules.stdout.find("GoServer") == -1
+
+- name: Allow GoServer port redirection through firewall
+  command: /sbin/iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT -m comment --comment "GoServer_redirect"
+  when: iptablesrules.stdout.find("GoServer") == -1
+
 - name: Allow GoServer SSl port through firewall
   command: /sbin/iptables -I INPUT 1 -p tcp --dport 8154 -j ACCEPT -m comment --comment "GoServerssl"
   when: iptablesrules.stdout.find("GoServerssl") == -1
@@ -19,17 +27,13 @@
 - name: Install yum utils
   yum: pkg=yum-utils state=installed
 
-- name: Install Git
-  yum: name=git state=present
-
-- name: Install Httpd
-  yum: name=httpd state=present
-
-- name: Install module ssl
+- name: Install dependecies
   yum: name={{item}} state=present
-  with_itmes:
-      - mod_wsgi
-      - mod_ssl
+  with_items:
+    - git
+    - httpd
+    - mod_wsgi
+    - mod_ssl
 
 - name: Installing Java
   yum: pkg=java-1.8.0-openjdk state=installed
@@ -40,29 +44,64 @@
 - name: Copy goserver admin credentials
   template: src=passwd_file.j2 dest=/var/lib/go-server/passwd-file owner=root group=root mode=0644
 
-#- name: Download github_oauth
-#  get_url:
-#    url: https://github.com/gocd-contrib/github-oauth-authorization-plugin/releases/download/2.2.0/github-oauth-authorization-plugin-2.2.0-21.jar
-#    dest: /var/lib/go-server/plugins/external/github-oauth-authorization-plugin-2.2.0-21.jar
-#    owner: go
-#    group: go
-#    mode: 0644
-#
-#- name: Download go_maven_poller
-#  get_url:
-#    url: https://github.com/1and1/go-maven-poller/releases/download/v1.2.1/go-maven-poller.jar
-#    dest: /var/lib/go-server/plugins/external/go-maven-poller.jar
-#    owner: go
-#    group: go
-#    mode: 0644
-#
-#- name: Download go_slack_notifier
-#  get_url:
-#    url: https://github.com/ashwanthkumar/gocd-slack-build-notifier/releases/download/v1.4.0-RC10/gocd-slack-notifier-1.4.0-RC10.jar
-#    dest: /var/lib/go-server/plugins/external/gocd-slack-notifier-1.4.0-RC10.jar
-#    owner: go
-#    group: go
-#    mode: 0644
+- name: Add user go to sudoers group
+  lineinfile: dest=/etc/sudoers state=present regexp='^go ALL\=' line='go ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'
+
+- name: Create external plugin directory
+  file:
+    path: /var/lib/go-server/plugins/external
+    state: directory
+    owner: go
+    group: go
+    mode: 0744
+
+- name: Download github_oauth
+  get_url:
+    url: https://github.com/gocd-contrib/github-oauth-authorization-plugin/releases/download/2.2.0/github-oauth-authorization-plugin-2.2.0-21.jar
+    dest: /var/lib/go-server/plugins/external/github-oauth-authorization-plugin-2.2.0-21.jar
+    owner: go
+    group: go
+    mode: 0644
+
+- name: Download go_maven_poller
+  get_url:
+    url: https://github.com/1and1/go-maven-poller/releases/download/v1.2.1/go-maven-poller.jar
+    dest: /var/lib/go-server/plugins/external/go-maven-poller.jar
+    owner: go
+    group: go
+    mode: 0644
+
+- name: Download go_slack_notifier
+  get_url:
+    url: https://github.com/ashwanthkumar/gocd-slack-build-notifier/releases/download/v1.4.0-RC11/gocd-slack-notifier-1.4.0-RC11.jar
+    dest: /var/lib/go-server/plugins/external/gocd-slack-notifier-1.4.0-RC10.jar
+    owner: go
+    group: go
+    mode: 0644
+
+- name: Download go_slack_notifier
+  get_url:
+    url: https://github.com/ashwanthkumar/gocd-slack-build-notifier/releases/download/v1.4.0-RC10/gocd-slack-notifier-1.4.0-RC11.jar
+    dest: /var/lib/go-server/plugins/external/gocd-slack-notifier-1.4.0-RC10.jar
+    owner: go
+    group: go
+    mode: 0644
+
+
+- name: Download Swarm plugins
+  get_url:
+    url: https://github.com/gocd-contrib/docker-swarm-elastic-agents/releases/download/3.0.2/docker-swarm-elastic-agents-3.0.2-120.jar
+    dest: /var/lib/go-server/plugins/external/docker-swarm-elastic-agents-3.0.2-120.jar
+    owner: go
+    group: go
+    mode: 0644
 
 - name: Start goserver service
   service: name=go-server state=started
+
+- name: Setpermissive for goserver http port
+  command: semanage port -a -t http_port_t -p tcp 8153
+
+- name: Setpermissive for goserver ssl port
+  command: semanage port -a -t http_port_t -p tcp 8154
+

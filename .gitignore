@@ -8,3 +8,5 @@ classes/
 .sass-cache
 .rubygems-provided
 .rubygems
+*.retry
+1
