@@ -8,8 +8,8 @@
     - "group_vars/users.yml"
     - "group_vars/cidr_blocks.yml"
     - "configs/instances.yml"
-    - "configs/ci_server.yml"
     - "configs/proxy.yml"
+    - "configs/ci_server.yml"
     - "configs/docker_node.yml"
     - "configs/docker_swarm.yml"
   tags:

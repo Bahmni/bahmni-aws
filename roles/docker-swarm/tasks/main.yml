@@ -89,7 +89,7 @@
   check_mode: false
   changed_when: false
 
-- name: Get swarm join token for worker0p
+- name: Get swarm join token for worker
   command: docker swarm join-token worker -q
   register: swarm_worker_token
   when:

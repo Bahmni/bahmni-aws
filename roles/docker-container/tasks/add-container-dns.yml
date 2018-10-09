@@ -6,7 +6,7 @@
     region:           "{{ aws_region }}"
     filters:
       instance-state-name: running
-      'tag:type': "public"
+      'tag:type': "private-public"
   register: public_proxy
 
 - name: Retrieve public hosted zone details
