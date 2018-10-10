@@ -28,11 +28,13 @@ echo "Change the permissions to readonly"
 chmod 0400 ca-key.pem key.pem server-key.pem
 echo "Change the client files to read-only"
 chmod 0444 ca.pem server-cert.pem cert.pem
+mkdir -p /opt/docker
+sudo ln -s /usr/libexec/docker/docker-runc-current /usr/bin/docker-runc
 mkdir -p /etc/systemd/system/docker.service.d
 cat > /etc/systemd/system/docker.service.d/override.conf << "EOF"
 [Service]
      ExecStart=
-     ExecStart=/usr/bin/dockerd -D -H unix:///var/run/docker.sock --tlsverify  --tlscert=/root/.docker/server-cert.pem --tlscacert=/root/.docker/ca.pem --tlskey=/root/.docker/server-key.pem -H tcp://0.0.0.0:2376
+     ExecStart=/usr/bin/dockerd -D -H unix:///var/run/docker.sock --tlsverify  --tlscert=/root/.docker/server-cert.pem --tlscacert=/root/.docker/ca.pem --tlskey=/root/.docker/server-key.pem -H tcp://0.0.0.0:2376 --experimental -g /opt/docker
 
 EOF
 sudo systemctl daemon-reload

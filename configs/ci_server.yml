@@ -5,12 +5,12 @@ build_server_spec:
    InstanceType: t2.xlarge
    SecurityGroups:
      - "{{ SecurityGroupIds.private_sg }}"
-   AmiId: "{{ available_amis.bahmni_ami }}"
+   AmiId: "ami-004b761553a4eca7c"
    SubnetId: "{{ SubnetIds.private }}"
    AssignPublicIp: no
    InstanceVolumes:
      - VolumeSpecifications:
-         - volume_size: 40
+         - volume_size: 250
            volume_type: gp2
            device_name: /dev/sda1
            delete_on_termination: no

@@ -10,7 +10,7 @@ proxy_spec:
    public_ip: "18.136.160.61"
    InstanceVolumes:
      - VolumeSpecifications:
-         - volume_size: 40
+         - volume_size: 50
            volume_type: gp2
            device_name: /dev/sda1
            delete_on_termination: yes

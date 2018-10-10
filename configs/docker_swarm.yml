@@ -4,7 +4,7 @@ docker_swarm_env_spec:
    ExactCount: 1
    InstanceType: t2.xlarge
    SecurityGroups:
-     - "{{ SecurityGroupIds.showcase_sg }}"
+     - "{{ SecurityGroupIds.private_sg }}"
    AmiId: "{{ available_amis.docker_host_ami }}"
    SubnetId: "{{ SubnetIds.private }}"
    AssignPublicIp: no
