@@ -19,7 +19,7 @@
 - name: Install go-agent
   yum: name="go-agent-{{ go_agent_version }}" state=present
 
-- name: Set GO_SERVER as ci.mybahmni.org
+- name: Set GO_SERVER as ci-server.mybahmni.org
   template:
     src=go-agent.j2
     dest=/etc/default/go-agent
@@ -30,6 +30,9 @@
 
 - name: create folder /var/www/rpm/bahmni/ for rpms
   file: path=/var/www/rpm/bahmni/ owner=go group=go mode=0755 state=directory
+
+- name: create folder /opt/go-agent
+  file: path=/opt/go-agent owner=go group=go mode=0755 state=directory
 
 - name: Drop in Ansible vault pem file
   template:

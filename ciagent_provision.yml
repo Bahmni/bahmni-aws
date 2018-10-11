@@ -6,16 +6,7 @@
   roles:
     - epel-repo
     - oracle-java
-    - build-utils
-    - ruby2.2.2
     - go-agent
-    - postgres
-    - mysql
-    - maven
-    - firefox
-    - chrome
-    - gauge
-    - httpd
   vars_files:
     - "group_vars/vars.yml"
   tags:

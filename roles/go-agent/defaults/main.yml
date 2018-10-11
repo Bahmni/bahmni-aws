@@ -1,3 +1,3 @@
 download_folder: /opt
 go_java_home: "/usr/java/default"
-go_agent_version: "16.11.0-4185"
+go_agent_version: "18.8.0-7433"
