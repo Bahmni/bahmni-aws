@@ -3,6 +3,10 @@ set -e
 container_name=$container_name
 sudo yum install -y docker
 sudo chkconfig docker on
+sudo mkdir -p /opt/docker
+sudo mv /var/lib/docker/ /opt/docker/
+sudo sudo ln -s /opt/docker/ /var/lib/docker/
+
 sudo service docker start
 sudo docker login -u $hub_username -p $hub_password
 
