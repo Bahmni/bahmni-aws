@@ -2,9 +2,8 @@
 set -e
 container_name=$container_name
 sudo yum install -y docker
-sudo chkconfig docker on
-
 sudo service docker start
+sudo systemctl enable docker.service
 sudo docker login -u $hub_username -p $hub_password
 
 if sudo semanage port -l |grep ${https_port}; then
