@@ -1,9 +1,4 @@
-- hosts: '{{ host }}'
-  vars:
-    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
-    ansible_user: centos
+- hosts: localhost
+  become: yes
   roles:
-  - docker-container
-  vars_files:
-  - "group_vars/aws_credentials.yml"
-  - "group_vars/cidr_blocks.yml"
+    - docker-container
