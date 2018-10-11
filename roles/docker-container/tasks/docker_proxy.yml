@@ -1,4 +1,3 @@
-
 - name: insert frontend configuration in haproxy config
   sudo: yes
   blockinfile:
@@ -11,6 +10,7 @@
             use_backend {{container_name}} if {{container_name }}
             acl {{ container_name }}_erp req.ssl_sni -i erp-{{ container_name }}.mybahmni.org
             use_backend {{container_name}} if {{ container_name }}_erp
+  delegate to: "{{groups['tag_Name_proxy']}}"
 
 - name: insert backend configuration in haproxy config
   sudo: yes
@@ -24,7 +24,9 @@
        mode tcp
        option ssl-hello-chk
        server {{ container_name }} {{ docker_instance_IP }}:{{ https_port }} check
+  delegate to: "{{groups['tag_Name_proxy']}}"
 
 - name: Restart haproxy
   sudo: yes
   service: name=haproxy state=reloaded
+  delegate to: "{{groups['tag_Name_proxy']}}"
