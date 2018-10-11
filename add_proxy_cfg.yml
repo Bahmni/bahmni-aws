@@ -1,4 +1,4 @@
-- hosts: proxy.mybahmni.org
+- hosts: '{{ host }}'
   vars:
     ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q centos@18.136.160.61"'
     ansible_user: centos
