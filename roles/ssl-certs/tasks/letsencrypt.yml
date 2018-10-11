@@ -63,13 +63,13 @@
   become: yes
 
 - letsencrypt:
-     acme_directory: "{{ letsencrypt_prod_server }}"
-     account_email: "{{ email }}"
-     account_key: "{{ certs_dir }}/account.key"
-     csr: "{{ certs_dir }}/csr.csr"
-     dest: "{{ certs_dir }}/cert.crt"
-     challenge: "dns-01"
-     agreement: "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+    acme_directory: "{{ letsencrypt_prod_server }}"
+    account_email: "{{ email }}"
+    account_key: "{{ certs_dir }}/account.key"
+    csr: "{{ certs_dir }}/csr.csr"
+    dest: "{{ certs_dir }}/cert.crt"
+    challenge: "dns-01"
+    agreement: "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf"
   become: yes
   register: letsencrypt_data
 
@@ -94,13 +94,13 @@
 
 - name: receive signed certificate from LetsEncrypt
   letsencrypt:
-   acme_directory: "{{ letsencrypt_prod_server }}"
-   account_email: "{{ email }}"
-   account_key: "{{ certs_dir }}/account.key"
-   csr: "{{ certs_dir }}/csr.csr"
-   dest: "{{ certs_dir }}/cert.crt"
-   challenge: "dns-01"
-   data: "{{ letsencrypt_data }}"
+    acme_directory: "{{ letsencrypt_prod_server }}"
+    account_email: "{{ email }}"
+    account_key: "{{ certs_dir }}/account.key"
+    csr: "{{ certs_dir }}/csr.csr"
+    dest: "{{ certs_dir }}/cert.crt"
+    challenge: "dns-01"
+    data: "{{ letsencrypt_data }}"
   become: yes
 
 - name: create certificate chain
@@ -111,9 +111,9 @@
   file: src={{ item.src }}  dest={{ item.dest }} state=link owner={{ certs_user }} group={{ certs_group }}
   become: yes
   with_items:
-    - {src: "{{ certs_dir }}/cert.crt", dest: /etc/bahmni-certs/cert.crt}
-    - {src: "{{ certs_dir }}/domain.key", dest: /etc/bahmni-certs/domain.key}
-    - {src: "{{ certs_dir }}/chained.pem", dest: /etc/bahmni-certs/chained.pem}
+  - {src: "{{ certs_dir }}/cert.crt", dest: /etc/bahmni-certs/cert.crt}
+  - {src: "{{ certs_dir }}/domain.key", dest: /etc/bahmni-certs/domain.key}
+  - {src: "{{ certs_dir }}/chained.pem", dest: /etc/bahmni-certs/chained.pem}
 
 - name: start httpd service
   service: name=httpd state=restarted
