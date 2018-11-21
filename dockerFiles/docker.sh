@@ -37,4 +37,4 @@ else
 fi
 sudo docker build --rm -t bahmni/bahmni_centos:${container_name} --build-arg rpm_version=${rpm_version} --build-arg inventory_name=${inventory_name} --build-arg aws_secret_key=${aws_secret_key} --build-arg container_name=${container_name} --build-arg aws_access_key=${aws_access_key} .
 sudo docker run --restart=always -e container_name=${container_name} -it --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d -p ${https_port}:443 --privileged --name $container_name -v $container_name:/$container_name bahmni/bahmni_centos:${container_name}
-sudo docker exec -t product-qa03 /tmp/bahmni_install.sh
+sudo docker exec -t product-qa03 /tmp/install_bahmni.sh

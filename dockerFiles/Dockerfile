@@ -21,8 +21,8 @@ RUN echo -e "[bahmni] \nname=Bahmni development repository for RHEL/CentOS 7\nba
     && sed -i "1,100 s/^/#/" /opt/bahmni-installer/bahmni-playbooks/roles/dcm4chee-oracle-java/tasks/main.yml \
     && pip uninstall -y docutils
 
-ADD bahmni_install.sh /tmp/bahmni_install.sh
-RUN chmod a+x /tmp/bahmni_install.sh
+ADD install_bahmni.sh /tmp/install_bahmni.sh
+RUN chmod a+x /tmp/install_bahmni.sh
 ADD db_service.sh /tmp/db_service.sh
 RUN chmod a+x /tmp/db_service.sh
 ENTRYPOINT ["/usr/sbin/init"]
