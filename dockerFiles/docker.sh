@@ -35,6 +35,12 @@ if ! sudo docker volume ls -q --filter name="${container_name}"| grep -q "${cont
 else
         echo "Volume ${container_name} exists"
 fi
+sudo cp -rf install_bahmni.sh /opt/docker/volumes/${container_name}/_data/
+sudo chmod a+x /opt/docker/volumes/${container_name}/_data/install_bahmni.sh
+
+sudo cp -rf db_service.sh /opt/docker/volumes/${container_name}/_data/
+sudo chmod a+x /opt/docker/volumes/${container_name}/_data/db_service.sh
+
 sudo docker build --rm -t bahmni/bahmni_centos:${container_name} --build-arg rpm_version=${rpm_version} --build-arg inventory_name=${inventory_name} --build-arg aws_secret_key=${aws_secret_key} --build-arg container_name=${container_name} --build-arg aws_access_key=${aws_access_key} .
 sudo docker run --restart=always -e container_name=${container_name} -it --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d -p ${https_port}:443 --privileged --name $container_name -v $container_name:/$container_name bahmni/bahmni_centos:${container_name}
-sudo docker exec -t product-qa03 /tmp/install_bahmni.sh
+sudo docker exec -t ${container_name} /${container_name}/install_bahmni.sh
