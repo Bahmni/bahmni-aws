@@ -2,6 +2,9 @@
 set -e
 container_name=$container_name
 bahmni -ilocal install
+aws_secret_key=$1
+aws_access_key=$2
+
 if [[ -f "/${container_name}/letsencrypt/cert.crt" && -f "/${container_name}/letsencrypt/chained.pem" && -f "/${container_name}/letsencrypt/domain.key" ]] && openssl x509 -checkend 86400 -noout -in "/${container_name}/letsencrypt/chained.pem" ;
 then
 	echo "inside if" ;
