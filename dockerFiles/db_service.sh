@@ -18,10 +18,10 @@ else
 fi
 
 if [ -f /var/lib/pgsql/.bash_profile ]; then
-    sudo mkdir -p /${container_name}/pgsql/9.5/data && sudo chown -R postgres:postgres /${container_name}/pgsql
-    sudo sed -i "s|PGDATA=/var/lib/pgsql/9.5/data|PGDATA=/${container_name}/pgsql/9.5/data|g" /var/lib/pgsql/.bash_profile
+    sudo mkdir -p /${container_name}/pgsql/9.6/data && sudo chown -R postgres:postgres /${container_name}/pgsql
+    sudo sed -i "s|PGDATA=/var/lib/pgsql/9.6/data|PGDATA=/${container_name}/pgsql/9.6/data|g" /var/lib/pgsql/.bash_profile
     export PGDATA
-    sudo service postgresql-9.5 restart
+    sudo service postgresql-9.6 restart
 else
    echo "File /var/lib/pgsql/.bash_profile does not exist."
 fi
@@ -30,7 +30,7 @@ if [ -n "$(ls -A /${container_name}/pgsql)" ]; then
     echo "Directory exists and Already Postgres sync completed"
 else
     sudo rsync -avr -o -g /var/lib/pgsql /${container_name}
-    sudo service postgresql-9.5 restart
+    sudo service postgresql-9.6 restart
 fi
 
 if [ -d /home/bahmni ]; then
