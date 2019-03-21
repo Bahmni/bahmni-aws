@@ -3,18 +3,16 @@ set -e
 container_name=$container_name
 sudo rsync -abv --remove-source-files  /etc/letsencrypt-certs /${container_name}/
 if [ -f /etc/my.cnf ]; then
-    sudo mkdir -p /${container_name}/mysql && sudo chown -R mysql:mysql /${container_name}/mysql
+    if [ -n "$(ls -a /${container_name}/mysql)" ]; then
+        echo "directory exists and already mysql sync completed"
+    else
+        sudo mkdir -p /${container_name}/mysql && sudo chown -R mysql:mysql /${container_name}/mysql
+        sudo rsync -avr -o -g /var/lib/mysql /${container_name}
+    fi
     sudo sed -i "s|datadir=/var/lib/mysql|datadir=/${container_name}/mysql|g" /etc/my.cnf
     sudo service mysqld restart
 else
    echo "File /etc/my.cnf does not exist."
-fi
-
-if [ -n "$(ls -A /${container_name}/mysql)" ]; then
-    echo "Directory exists and Already mysql sync completed"
-else
-    sudo rsync -avr -o -g /var/lib/mysql /${container_name}
-    sudo service mysqld restart
 fi
 
 if [ -f /var/lib/pgsql/.bash_profile ]; then
