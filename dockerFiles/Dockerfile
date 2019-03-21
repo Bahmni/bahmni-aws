@@ -25,4 +25,4 @@ ADD install_bahmni.sh /tmp/install_bahmni.sh
 RUN chmod a+x /tmp/install_bahmni.sh
 ADD db_service.sh /tmp/db_service.sh
 RUN chmod a+x /tmp/db_service.sh
-ENENTRYPOINT ["/usr/sbin/init"]
+ENTRYPOINT ["/usr/sbin/init"]
