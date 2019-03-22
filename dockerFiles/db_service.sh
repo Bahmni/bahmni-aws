@@ -34,7 +34,6 @@ fi
 if [ -d /home/bahmni ]; then
    sudo bahmni -ilocal stop
    sudo rsync -avr -o -g /home/bahmni /${container_name}
-   sudo rm -rf /home/bahmni
    ln -s /${container_name}/bahmni /home/bahmni && chown -h bahmni:bahmni /home/bahmni
    sudo bahmni -ilocal start
 else
