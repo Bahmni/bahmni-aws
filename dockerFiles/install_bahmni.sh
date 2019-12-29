@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 container_name=$container_name
-yum -y install https://kojipkgs.fedoraproject.org//packages/zlib/1.2.11/18.fc30/x86_64/zlib-1.2.11-18.fc30.x86_64.rpm
+yum -y install https://kojipkgs.fedoraproject.org//packages/zlib/1.2.11/18.fc30/x86_64/zlib-1.2.11-18.fc30.x86_64.rpm
 bahmni -ilocal install
 aws_secret_key=$1
 aws_access_key=$2
