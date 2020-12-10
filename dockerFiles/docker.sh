@@ -45,4 +45,4 @@ sudo docker build --rm -t bahmni/bahmni_centos:${container_name} --build-arg rpm
 
 sudo docker run --restart=always -e container_name=${container_name} -it --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d -p ${https_port}:443 --privileged --name $container_name -v $container_name:/$container_name bahmni/bahmni_centos:${container_name}
 
-sudo docker exec -t ${container_name} /tmp/install_bahmni.sh ${aws_secret_key} ${aws_access_key}
+sudo docker exec -t ${container_name} /${container_name}/install_bahmni.sh ${aws_secret_key} ${aws_access_key}
