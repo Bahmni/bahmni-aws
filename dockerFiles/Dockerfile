@@ -22,7 +22,6 @@ RUN echo -e "[bahmni] \nname=Bahmni development repository for RHEL/CentOS 7\nba
     && pip uninstall -y docutils \
     && yum install https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.4.6.0-1.el7.ans.noarch.rpm -y \
     && yum -y install https://kojipkgs.fedoraproject.org//packages/zlib/1.2.11/19.fc30/x86_64/zlib-1.2.11-19.fc30.x86_64.rpm \
-    && pip install --upgrade pip \
     && pip uninstall -y Click \
     && pip install "Click==7.0" \
     && pip install beautifulsoup4
