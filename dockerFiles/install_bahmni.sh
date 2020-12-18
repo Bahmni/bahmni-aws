@@ -5,7 +5,7 @@ bahmni -ilocal install
 aws_secret_key=$1
 aws_access_key=$2
 
-if [[ -f "/${container_name}/letsencrypt/cert.crt" && -f "/${container_name}/letsencrypt/chained.pem" && -f "/${container_name}/letsencrypt/domain.key" ]] && openssl x509 -checkend 86400 -noout -in "/${container_name}/letsencrypt/chained.pem" ;
+if [[ -f "/${container_name}/letsencrypt-certs/cert.crt" && -f "/${container_name}/letsencrypt-certs/chained.pem" && -f "/${container_name}/letsencrypt-certs/domain.key" ]] && openssl x509 -checkend 86400 -noout -in "/${container_name}/letsencrypt-certs/chained.pem" ;
 then
 	echo "inside if" ;
     rm -rf /etc/bahmni-certs/* ;
