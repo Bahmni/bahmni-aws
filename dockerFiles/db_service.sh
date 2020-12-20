@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 container_name=$container_name
-sudo rsync -abv --remove-source-files  /etc/letsencrypt-certs /${container_name}/
+sudo rsync -abv --remove-source-files  /etc/bahmni-certs /${container_name}/
 if [ -f /etc/my.cnf ]; then
     if [ -n "$(ls -a /${container_name}/mysql)" ]; then
         echo "directory exists and already mysql sync completed"
