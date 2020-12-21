@@ -24,6 +24,6 @@ else
     sudo ln -s /${container_name}/letsencrypt-certs/chained.pem /etc/bahmni-certs/chained.pem ;
     sudo ln -s /${container_name}/letsencrypt-certs/domain.key /etc/bahmni-certs/domain.key ;
 fi
-sudo /${container_name}/db_service.sh ;
+# sudo /${container_name}/db_service.sh ;
 bahmni -ilocal start ;
-service bahmni-lab restart ;
+systemctl restart bahmni-lab ;
