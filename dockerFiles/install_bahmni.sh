@@ -9,7 +9,7 @@ if [[ -f "/${container_name}/letsencrypt-certs/cert.crt" && -f "/${container_nam
 then
 	echo "inside if" ;
     rm -rf /etc/bahmni-certs/* ;
-    ln -s /${container_name}/letsencrypt-certs/cert.crt /etc/bahmni-certs/cert;
+    ln -s /${container_name}/letsencrypt-certs/cert.crt /etc/bahmni-certs/cert.crt;
     ln -s /${container_name}/letsencrypt-certs/chained.pem /etc/bahmni-certs/chained.pem;
     ln -s /${container_name}/letsencrypt-certs/domain.key /etc/bahmni-certs/domain.key;
 else
