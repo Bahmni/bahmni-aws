@@ -9,9 +9,9 @@ RUN echo -e "[bahmni] \nname=Bahmni development repository for RHEL/CentOS 6\nba
     && rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm \
     && yum -y install epel-release python-pip git \
     && yum install -y sudo openssh-server openssh-clients tar wget yum-plugin-ovl  ; yum clean all \
+    && yum upgrade python-setuptools \
     && pip install awscli \
     && pip install boto \
-    && yum upgrade python-setuptools \
     && yum install -y bahmni-installer-$rpm_version-* \
     && wget -O /etc/bahmni-installer/local https://raw.githubusercontent.com/Bahmni/bahmni-tw-playbooks/master/inventories/$inventory_name \
     && wget https://mirror.its.sfu.ca/mirror/CentOS-Third-Party/RCG/common/x86_64/jre-7u79-linux-x64.rpm -O /opt/jre-7u79-linux-x64.rpm \
