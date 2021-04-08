@@ -9,9 +9,9 @@ RUN echo -e "[bahmni] \nname=Bahmni development repository for RHEL/CentOS 7\nba
     && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
     && yum -y install epel-release python-pip git \
     && yum install -y sudo openssh-server openssh-clients tar wget yum-plugin-ovl  ; yum clean all \
+    && yum install python-setuptools \
     && pip install awscli \
     && pip install boto \
-    && yum install python-setuptools \
     && yum install -y bahmni-installer-$rpm_version-* \
     && pip install --upgrade pip==19.0.0 \
     && pip install --upgrade setuptools==40.0.0 \
