@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 container_name=$container_name
+curl https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm  --output /opt/pgdg-redhat-repo-latest.noarch.rpm
 bahmni -ilocal install
 aws_secret_key=$1
 aws_access_key=$2
